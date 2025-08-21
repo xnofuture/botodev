@@ -1,0 +1,21 @@
+Разработка ведется только на этих компонентах:
+TypeScript
+React
+Vite
+Tailwind CSS
+Shadcn UI
+Radix UI
+React Hook Form
+Zod
+React Query
+Framer Motion
+React Router
+ESLint
+PostCSS
+date-fns
+Lucide
+
+
+Используй только готовый решения которые предоставляют компоненты, к кастомным версиям прибегай только в случае полной невозможности использования готовых решений.
+
+
