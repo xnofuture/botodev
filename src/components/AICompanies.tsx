@@ -45,7 +45,7 @@ const AICompanies = () => {
       <div className="w-full">
         <div className="relative overflow-hidden w-full bg-background/20 backdrop-filter backdrop-blur-sm rounded-lg">
           <div
-            className={`flex space-x-4 sm:space-x-8 md:space-x-12 w-full ${isVisible ? 'animate-marquee-fast' : 'animate-marquee'}`}
+            className={`flex space-x-4 sm:space-x-8 md:space-x-12 w-full ${isVisible ? 'animate-marquee-faster' : 'animate-marquee'}`}
           >
             {companies.map((company, index) => (
               <div

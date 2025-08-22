@@ -1,28 +1,29 @@
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { useRef } from 'react';
 import aiImage from '@/img/AI.png';
+import { useIsMobile } from '@/hooks/use-mobile'; // Исправленный импорт хука
 
 const ScrollAnimatedImage = () => {
   const containerRef = useRef(null);
+  const isMobile = useIsMobile(); // Используем хук для определения типа устройства
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
-    offset: ["start center", "end center"] // фиксим привязку
+    offset: ["start center", "end center"]
   });
 
-  // Маппинг: 0 → 60°, 0.5 → 0°, 1 → 60°
   const rotate = useTransform(scrollYProgress, [0, 0.5, 1], [50, 0, 40]);
 
   return (
     <div
       ref={containerRef}
-      className="w-full flex justify-center min-h-[100vh] py-6 sm:py-8 md:py-[10vh]"
+      className="w-full flex justify-center py-6 sm:py-8 md:py-[5vh] px-4 sm:px-0"
       style={{ perspective: '1000px' }}
     >
       <motion.div
-        className="w-full max-w-[1200px]"
+        className="w-full max-w-[1000]"
         style={{
-          rotateX: rotate,
+          rotateX: rotate, // Анимация теперь всегда активна
           transformStyle: 'preserve-3d',
           willChange: 'transform',
         }}

@@ -35,7 +35,7 @@ async function initEncryptedDB(): Promise<any> {
     db = new sqlite3.Database(dbPath, sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE, (err: Error | null) => {
       if (err) {
         console.error('Ошибка открытия базы данных', err);
-        reject(err);
+        reject({ error: 'Ошибка открытия базы данных', details: err.message });
         return;
       }
 
@@ -43,7 +43,7 @@ async function initEncryptedDB(): Promise<any> {
       db.run(`PRAGMA key = "${process.env.DB_KEY || 'your-default-secure-key'}";`, (err: Error | null) => {
         if (err) {
           console.error('Ошибка установки ключа шифрования', err);
-          reject(err);
+          reject({ error: 'Ошибка установки ключа шифрования', details: err.message });
           return;
         }
 
@@ -60,7 +60,7 @@ async function initEncryptedDB(): Promise<any> {
         `, (err: Error | null) => {
           if (err) {
             console.error('Ошибка создания таблицы', err);
-            reject(err);
+            reject({ error: 'Ошибка создания таблицы', details: err.message });
           } else {
             resolve(db);
           }
@@ -83,7 +83,7 @@ export const sqliteEncryptedClient = {
       return new Promise((resolve, reject) => {
         db.run(
           `INSERT INTO users (email, password, login, offer)
-           VALUES (?, ?, ?, ?)`,
+           VALUES (?, ?, ?, ?)` ,
           [userData.email, hashedPassword, userData.login, userData.offer],
           function (err: Error | null) {
             if (err) {
@@ -109,7 +109,7 @@ export const sqliteEncryptedClient = {
           }
         );
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error('Ошибка регистрации пользователя:', error);
       throw { error: 'Внутренняя ошибка сервера', details: error.message };
     }
@@ -125,15 +125,15 @@ export const sqliteEncryptedClient = {
         db.get('SELECT * FROM users WHERE email = ?', [email], (err: Error | null, row: any) => {
           if (err) {
             console.error('Ошибка поиска пользователя:', err);
-            reject(err);
+            reject({ error: 'Ошибка поиска пользователя', details: err.message });
           } else {
             resolve(row || null);
           }
         });
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error('Ошибка поиска пользователя:', error);
-      throw error;
+      throw { error: 'Внутренняя ошибка сервера', details: error.message };
     }
   },
 
@@ -156,8 +156,30 @@ export const sqliteEncryptedClient = {
       
       const { password: _, ...publicUser } = user;
       return publicUser;
-    } catch (error) {
+    } catch (error: any) {
       console.error('Ошибка проверки учетных данных:', error);
+      throw { error: 'Внутренняя ошибка сервера', details: error.message };
+    }
+  },
+
+  /**
+   * Получение всех пользователей
+   */
+  async getAllUsers(): Promise<any[]> {
+    try {
+      await initEncryptedDB();
+      return new Promise((resolve, reject) => {
+        db.all('SELECT id, email, login, offer FROM users', [], (err: Error | null, rows: any[]) => {
+          if (err) {
+            console.error('Ошибка получения всех пользователей:', err);
+            reject({ error: 'Ошибка получения всех пользователей', details: err.message });
+          } else {
+            resolve(rows);
+          }
+        });
+      });
+    } catch (error: any) {
+      console.error('Ошибка получения всех пользователей:', error);
       throw { error: 'Внутренняя ошибка сервера', details: error.message };
     }
   }

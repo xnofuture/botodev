@@ -1,16 +1,19 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { motion, useInView } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Check, Star, Zap, Crown } from "lucide-react";
 import AuthDialog from "@/components/AuthDialog";
 
 const Pricing = () => {
   const [showAuthDialog, setShowAuthDialog] = useState(false);
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, amount: 0.5 }); // Анимация при 50% видимости блока
   
   const plans = [
     {
       name: "Базовый",
       icon: <Zap className="w-8 h-8" />,
-      price: "29 990",
+      price: "250",
       period: "месяц",
       description: "Идеально для малого бизнеса",
       features: [
@@ -27,7 +30,7 @@ const Pricing = () => {
     {
       name: "Премиум",
       icon: <Star className="w-8 h-8" />,
-      price: "79 990",
+      price: "500",
       period: "месяц",
       description: "Для растущих компаний",
       features: [
@@ -46,7 +49,7 @@ const Pricing = () => {
     {
       name: "Enterprise",
       icon: <Crown className="w-8 h-8" />,
-      price: "от 199 990",
+      price: "от 2000",
       period: "месяц",
       description: "Для крупных предприятий",
       features: [
@@ -66,11 +69,11 @@ const Pricing = () => {
   ];
 
   return (
-    <section className="py-12 sm:py-16 md:py-20 lg:py-32 relative overflow-hidden">
+    <section ref={ref} className="py-12 sm:py-16 md:py-20 lg:py-32 relative overflow-hidden">
       {/* Background elements */}
       <div className="absolute inset-0">
         <div className="absolute top-20 left-20 w-60 h-60 rounded-full bg-primary/5 animate-float"></div>
-        <div className="absolute bottom-20 right-20 w-40 h-40 rounded-full bg-accent/5 animate-float" style={{ animationDelay: '2s' }}></div>
+        <div className="absolute bottom-20 right-20 w-40 h-40 rounded-full bg-accent/5 animate-float" style={{ animationDelay: '3s' }}></div>
       </div>
 
       <div className="container mx-auto px-4 relative z-10">
@@ -87,14 +90,21 @@ const Pricing = () => {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-8 max-w-7xl mx-auto items-stretch">
           {plans.map((plan, index) => (
-            <div
+            <motion.div
               key={index}
+              initial={{ opacity: 0, scale: 0.8 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ root: ref, once: true, amount: 0.6 }}
+              transition={{
+                duration: 0.4,
+                delay: index * 0.1,
+                ease: "easeOut",
+              }}
               className={`glass-card relative flex flex-col ${
                 plan.popular
                   ? 'ring-2 ring-primary/50 md:scale-105 transform'
                   : ''
-              } animate-slide-up`}
-              style={{ animationDelay: `${index * 0.2}s` }}
+              }`}
             >
               {plan.popular && (
                 <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
@@ -135,7 +145,7 @@ const Pricing = () => {
                   {plan.name === "Enterprise" ? "Связаться с нами" : "Выбрать план"}
                 </Button>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
 

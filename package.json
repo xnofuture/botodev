@@ -9,8 +9,9 @@
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "preview": "vite preview",
-    "server": "tsx src/server.ts",
-    "init-user": "tsx src/initUser.ts"
+    "server": "tsx src/start-server.ts",
+    "init-user": "tsx src/initUser.ts",
+    "read-db": "tsx src/readDbExample.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
